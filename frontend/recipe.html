@@ -3,63 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recipe – Cookie Baking Hub</title>
+  <title>Recipe | Cookie Baking Hub</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="container">
-      <a href="index.html" class="site-logo">🍪 Cookie Baking Hub</a>
+      <a href="index.html" class="logo">🍪 Cookie Baking Hub</a>
     </div>
   </header>
 
-  <main class="container recipe-detail-page">
-    <!-- Back link -->
-    <nav class="breadcrumb" aria-label="Back navigation">
-      <a href="index.html" class="back-link">← Back to all recipes</a>
-    </nav>
+  <main class="container" id="recipe-main">
+    <div id="loading" class="loading-state">Loading recipe…</div>
+    <div id="error" class="error-state" hidden></div>
 
-    <!-- Loading state -->
-    <div id="recipe-loading" class="state-message" role="status" aria-live="polite">Loading recipe…</div>
-
-    <!-- Error state -->
-    <div id="recipe-error" class="state-message state-message--error" role="alert" hidden></div>
-
-    <!-- Recipe content -->
-    <article id="recipe-content" hidden>
-
-      <!-- ── HEADER ── -->
+    <article id="recipe-detail" hidden>
       <header class="recipe-header">
-        <h1 id="recipe-name" class="recipe-title"></h1>
-        <div class="recipe-meta">
-          <span class="meta-badge" id="recipe-difficulty"></span>
-          <span class="meta-item"><span class="meta-icon">⏱</span> Prep: <strong id="recipe-prep-time"></strong></span>
-          <span class="meta-item"><span class="meta-icon">🔥</span> Cook: <strong id="recipe-cook-time"></strong></span>
-          <span class="meta-item"><span class="meta-icon">⏳</span> Total: <strong id="recipe-total-time"></strong></span>
-        </div>
+        <a href="index.html" class="back-link">← Back to Recipes</a>
+        <h1 id="recipe-title"></h1>
         <p id="recipe-description" class="recipe-description"></p>
+        <div class="recipe-meta">
+          <span id="recipe-prep"></span>
+          <span id="recipe-cook"></span>
+          <span id="recipe-servings"></span>
+        </div>
       </header>
 
-      <div class="recipe-body">
-        <!-- ── INGREDIENTS ── -->
-        <section class="recipe-section ingredients-section" aria-labelledby="ingredients-heading">
-          <h2 id="ingredients-heading">Ingredients</h2>
-          <ul id="ingredients-list" class="ingredients-list"></ul>
-        </section>
+      <!-- Step-by-step section -->
+      <section class="steps-section" id="steps-section" hidden>
+        <h2 class="steps-heading">Step-by-Step Instructions</h2>
 
-        <!-- ── INSTRUCTIONS ── -->
-        <section class="recipe-section instructions-section" aria-labelledby="instructions-heading">
-          <h2 id="instructions-heading">Instructions</h2>
-          <ol id="instructions-list" class="instructions-list"></ol>
-        </section>
-      </div>
+        <div class="step-progress">
+          <span id="step-counter" class="step-counter"></span>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+          </div>
+        </div>
 
-      <!-- ── BETWEEN-RECIPE NAVIGATION ── -->
-      <nav class="recipe-pagination" aria-label="Recipe navigation">
-        <button id="btn-prev" class="btn btn--outline" disabled>← Previous Recipe</button>
-        <button id="btn-next" class="btn btn--outline" disabled>Next Recipe →</button>
-      </nav>
+        <div class="step-card" id="step-card">
+          <div class="step-image-wrap">
+            <img id="step-image" src="" alt="" class="step-image" />
+          </div>
+          <div class="step-content">
+            <div class="step-number-badge" id="step-number-badge"></div>
+            <p id="step-instruction" class="step-instruction"></p>
+          </div>
+        </div>
 
+        <nav class="step-nav" aria-label="Step navigation">
+          <button id="btn-prev" class="btn btn-secondary" disabled>← Previous</button>
+          <div class="step-dots" id="step-dots"></div>
+          <button id="btn-next" class="btn btn-primary">Next →</button>
+        </nav>
+      </section>
+
+      <!-- Fallback plain instructions -->
+      <section class="plain-instructions" id="plain-instructions" hidden>
+        <h2>Instructions</h2>
+        <ol id="instructions-list" class="instructions-list"></ol>
+      </section>
     </article>
   </main>
 
