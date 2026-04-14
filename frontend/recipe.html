@@ -3,72 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recipe | Cookie Baking Hub</title>
+  <title>Recipe – Cookie Baking Hub</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <a href="index.html" class="logo">🍪 Cookie Baking Hub</a>
+  <header>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;">
+      <h1><a href="index.html">🍪 Cookie Baking Hub</a></h1>
+      <nav>
+        <a href="index.html">Recipes</a>
+      </nav>
     </div>
   </header>
 
-  <main class="container" id="recipe-main">
-    <div id="loading" class="loading-state">Loading recipe…</div>
-    <div id="error" class="error-state" hidden></div>
-
-    <article id="recipe-detail" hidden>
-      <header class="recipe-header">
-        <a href="index.html" class="back-link">← Back to Recipes</a>
-        <h1 id="recipe-title"></h1>
-        <p id="recipe-description" class="recipe-description"></p>
-        <div class="recipe-meta">
-          <span id="recipe-prep"></span>
-          <span id="recipe-cook"></span>
-          <span id="recipe-servings"></span>
-        </div>
-      </header>
-
-      <!-- Step-by-step section -->
-      <section class="steps-section" id="steps-section" hidden>
-        <h2 class="steps-heading">Step-by-Step Instructions</h2>
-
-        <div class="step-progress">
-          <span id="step-counter" class="step-counter"></span>
-          <div class="progress-bar-track">
-            <div class="progress-bar-fill" id="progress-bar-fill"></div>
-          </div>
-        </div>
-
-        <div class="step-card" id="step-card">
-          <div class="step-image-wrap">
-            <img id="step-image" src="" alt="" class="step-image" />
-          </div>
-          <div class="step-content">
-            <div class="step-number-badge" id="step-number-badge"></div>
-            <p id="step-instruction" class="step-instruction"></p>
-          </div>
-        </div>
-
-        <nav class="step-nav" aria-label="Step navigation">
-          <button id="btn-prev" class="btn btn-secondary" disabled>← Previous</button>
-          <div class="step-dots" id="step-dots"></div>
-          <button id="btn-next" class="btn btn-primary">Next →</button>
-        </nav>
-      </section>
-
-      <!-- Fallback plain instructions -->
-      <section class="plain-instructions" id="plain-instructions" hidden>
-        <h2>Instructions</h2>
-        <ol id="instructions-list" class="instructions-list"></ol>
-      </section>
-    </article>
+  <main>
+    <div id="recipe-detail" aria-live="polite" aria-label="Recipe detail">
+      <!-- Populated by recipe.js -->
+    </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <p>&copy; 2024 Cookie Baking Hub</p>
-    </div>
+  <footer>
+    <p>&copy; 2024 Cookie Baking Hub. All rights reserved.</p>
   </footer>
 
   <script src="js/recipe.js"></script>
