@@ -7,27 +7,23 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <a href="index.html" class="site-logo">🍪 Cookie Baking Hub</a>
+  <header>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;">
+      <h1><a href="index.html">🍪 Cookie Baking Hub</a></h1>
+      <nav>
+        <a href="index.html">Recipes</a>
+      </nav>
     </div>
   </header>
 
-  <main class="container">
-    <section class="page-hero">
-      <h1>Cookie Recipes</h1>
-      <p>Discover delicious cookie recipes for every skill level.</p>
-    </section>
-
-    <div id="loading" class="state-message" role="status" aria-live="polite">Loading recipes…</div>
-    <div id="error-message" class="state-message state-message--error" role="alert" hidden></div>
-    <div id="recipe-grid" class="recipe-grid"></div>
+  <main>
+    <div id="recipe-grid" aria-live="polite" aria-label="Recipe list">
+      <!-- Populated by app.js -->
+    </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <p>&copy; 2024 Cookie Baking Hub</p>
-    </div>
+  <footer>
+    <p>&copy; 2024 Cookie Baking Hub. All rights reserved.</p>
   </footer>
 
   <script src="js/app.js"></script>
