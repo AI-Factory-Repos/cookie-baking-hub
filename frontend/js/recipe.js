@@ -1,113 +1,80 @@
 const API_BASE = '/api';
 
-// Utility: escape HTML
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-// Get recipe id from query string
 function getRecipeId() {
   const params = new URLSearchParams(window.location.search);
   return params.get('id');
 }
 
-// Show loading state
-function setLoading(container, isLoading) {
-  if (isLoading) {
-    container.innerHTML = '<div class="loading"><span class="spinner"></span> Loading recipe…</div>';
-  }
+async function fetchRecipe(id) {
+  const res = await fetch(`${API_BASE}/${id}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
 }
 
-// Show error state
-function showError(container, message, retryId) {
-  container.innerHTML = `
-    <div class="error-message">
-      <p>⚠️ ${message}</p>
-      <a href="index.html" class="btn btn--secondary">← Back to Recipes</a>
-      ${retryId ? `<button onclick="loadRecipe('${retryId}')" class="btn btn--primary">Retry</button>` : ''}
-    </div>`;
-}
+function renderRecipe(recipe) {
+  document.title = `${recipe.name} | Cookie Baking Hub`;
 
-// Fetch single recipe from GET /api/:id
-async function loadRecipe(id) {
-  const container = document.getElementById('recipe-detail');
-  if (!container) return;
+  const container = document.getElementById('recipeContainer');
 
-  setLoading(container, true);
+  const img = recipe.image
+    ? `<img src="${recipe.image}" alt="${recipe.name}" class="detail-img" />`
+    : `<div class="detail-img-placeholder">🍪</div>`;
 
-  try {
-    const response = await fetch(`${API_BASE}/${encodeURIComponent(id)}`);
-    if (response.status === 404) {
-      showError(container, 'Recipe not found.', null);
-      return;
-    }
-    if (!response.ok) {
-      throw new Error(`Server error: ${response.status} ${response.statusText}`);
-    }
-    const recipe = await response.json();
-    renderRecipe(container, recipe);
-  } catch (err) {
-    console.error('Failed to load recipe:', err);
-    showError(container, 'Failed to load recipe. Please try again.', id);
-  }
-}
+  const metaItems = [
+    recipe.prepTime && `<div class="meta-item"><span class="meta-label">Prep</span><span>${recipe.prepTime}</span></div>`,
+    recipe.cookTime && `<div class="meta-item"><span class="meta-label">Cook</span><span>${recipe.cookTime}</span></div>`,
+    recipe.servings && `<div class="meta-item"><span class="meta-label">Serves</span><span>${recipe.servings}</span></div>`,
+    recipe.difficulty && `<div class="meta-item"><span class="meta-label">Difficulty</span><span class="difficulty difficulty-${recipe.difficulty.toLowerCase()}">${recipe.difficulty}</span></div>`,
+  ].filter(Boolean).join('');
 
-// Render full recipe detail
-function renderRecipe(container, recipe) {
-  // Update page title
-  document.title = `${recipe.title} – Cookie Baking Hub`;
-
-  // Build ingredients list
-  const ingredientsList = Array.isArray(recipe.ingredients) && recipe.ingredients.length
-    ? `<ul class="recipe-detail__ingredients">${recipe.ingredients.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`
-    : '<p>No ingredients listed.</p>';
-
-  // Build instructions list
-  const instructionsList = Array.isArray(recipe.instructions) && recipe.instructions.length
-    ? `<ol class="recipe-detail__instructions">${recipe.instructions.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>`
-    : '<p>No instructions provided.</p>';
-
-  container.innerHTML = `
-    <nav class="recipe-detail__nav">
-      <a href="index.html" class="btn btn--secondary">← Back to Recipes</a>
-    </nav>
-    <article class="recipe-detail">
-      ${recipe.image ? `<img class="recipe-detail__image" src="${escapeHtml(recipe.image)}" alt="${escapeHtml(recipe.title)}" />` : ''}
-      <h1 class="recipe-detail__title">${escapeHtml(recipe.title)}</h1>
-      ${recipe.description ? `<p class="recipe-detail__description">${escapeHtml(recipe.description)}</p>` : ''}
-      <div class="recipe-detail__meta">
-        ${recipe.prepTime ? `<div class="meta-item"><span class="meta-label">Prep Time</span><span>${escapeHtml(String(recipe.prepTime))}</span></div>` : ''}
-        ${recipe.cookTime ? `<div class="meta-item"><span class="meta-label">Cook Time</span><span>${escapeHtml(String(recipe.cookTime))}</span></div>` : ''}
-        ${recipe.servings ? `<div class="meta-item"><span class="meta-label">Servings</span><span>${escapeHtml(String(recipe.servings))}</span></div>` : ''}
-        ${recipe.difficulty ? `<div class="meta-item"><span class="meta-label">Difficulty</span><span>${escapeHtml(recipe.difficulty)}</span></div>` : ''}
-      </div>
-      <section class="recipe-detail__section">
+  const ingredients = recipe.ingredients && recipe.ingredients.length
+    ? `<section class="detail-section">
         <h2>Ingredients</h2>
-        ${ingredientsList}
-      </section>
-      <section class="recipe-detail__section">
+        <ul class="ingredients-list">
+          ${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}
+        </ul>
+      </section>`
+    : '';
+
+  const instructions = recipe.instructions && recipe.instructions.length
+    ? `<section class="detail-section">
         <h2>Instructions</h2>
-        ${instructionsList}
-      </section>
-      ${recipe.tags && recipe.tags.length ? `
-        <section class="recipe-detail__section">
-          <h2>Tags</h2>
-          <div class="recipe-detail__tags">${recipe.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
-        </section>` : ''}
-    </article>`;
+        <ol class="instructions-list">
+          ${recipe.instructions.map(s => `<li>${s}</li>`).join('')}
+        </ol>
+      </section>`
+    : '';
+
+  container.innerHTML = `
+    <article class="recipe-detail">
+      ${img}
+      <div class="detail-body">
+        <h1 class="detail-title">${recipe.name}</h1>
+        ${recipe.description ? `<p class="detail-desc">${recipe.description}</p>` : ''}
+        <div class="detail-meta">${metaItems}</div>
+        ${ingredients}
+        ${instructions}
+      </div>
+    </article>
+  `;
 }
 
-// Init
-document.addEventListener('DOMContentLoaded', () => {
+async function init() {
   const id = getRecipeId();
-  const container = document.getElementById('recipe-detail');
+  const container = document.getElementById('recipeContainer');
 
   if (!id) {
-    if (container) showError(container, 'No recipe specified.', null);
+    container.innerHTML = '<p class="error-msg">No recipe specified.</p>';
     return;
   }
 
-  loadRecipe(id);
-});
+  try {
+    const recipe = await fetchRecipe(id);
+    renderRecipe(recipe);
+  } catch (err) {
+    console.error('Failed to load recipe:', err);
+    container.innerHTML = '<p class="error-msg">Could not load the recipe. Please try again.</p>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
