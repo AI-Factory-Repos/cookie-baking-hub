@@ -1,79 +1,79 @@
 const API_BASE = '/api';
 
-// Utility: show/hide loading spinner
-function setLoading(container, isLoading) {
-  if (isLoading) {
-    container.innerHTML = '<div class="loading"><span class="spinner"></span> Loading recipes…</div>';
-  }
-}
-
-// Utility: show error message
-function showError(container, message) {
-  container.innerHTML = `<div class="error-message"><p>⚠️ ${message}</p><button onclick="loadRecipes()">Retry</button></div>`;
-}
-
-// Fetch all recipes from GET /api/
-async function loadRecipes() {
-  const grid = document.getElementById('recipe-grid');
-  if (!grid) return;
-
-  setLoading(grid, true);
-
+async function fetchRecipes() {
   try {
-    const response = await fetch(`${API_BASE}/`);
-    if (!response.ok) {
-      throw new Error(`Server error: ${response.status} ${response.statusText}`);
-    }
-    const recipes = await response.json();
-    renderRecipeGrid(grid, recipes);
+    const res = await fetch(`${API_BASE}/`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
   } catch (err) {
-    console.error('Failed to load recipes:', err);
-    showError(grid, 'Failed to load recipes. Please try again.');
+    console.error('Failed to fetch recipes:', err);
+    return [];
   }
 }
 
-// Render recipe cards into the grid
-function renderRecipeGrid(container, recipes) {
-  if (!recipes || recipes.length === 0) {
-    container.innerHTML = '<p class="no-results">No recipes found.</p>';
+function createRecipeCard(recipe) {
+  const card = document.createElement('a');
+  card.className = 'recipe-card';
+  card.href = `recipe.html?id=${recipe._id}`;
+
+  const img = recipe.image
+    ? `<img src="${recipe.image}" alt="${recipe.name}" class="card-img" loading="lazy" />`
+    : `<div class="card-img-placeholder">🍪</div>`;
+
+  card.innerHTML = `
+    ${img}
+    <div class="card-body">
+      <h3 class="card-title">${recipe.name}</h3>
+      ${recipe.description ? `<p class="card-desc">${recipe.description}</p>` : ''}
+      <div class="card-meta">
+        ${recipe.prepTime ? `<span>⏱ Prep: ${recipe.prepTime}</span>` : ''}
+        ${recipe.cookTime ? `<span>🔥 Cook: ${recipe.cookTime}</span>` : ''}
+        ${recipe.servings ? `<span>🍽 Serves: ${recipe.servings}</span>` : ''}
+        ${recipe.difficulty ? `<span class="difficulty difficulty-${recipe.difficulty.toLowerCase()}">${recipe.difficulty}</span>` : ''}
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+async function init() {
+  const grid = document.getElementById('recipeGrid');
+  const loadingMsg = document.getElementById('loadingMsg');
+
+  const recipes = await fetchRecipes();
+
+  if (loadingMsg) loadingMsg.remove();
+
+  if (!recipes.length) {
+    grid.innerHTML = '<p class="empty-msg">No recipes found. Check back soon!</p>';
     return;
   }
 
-  container.innerHTML = recipes.map(recipe => `
-    <article class="recipe-card">
-      ${recipe.image ? `<img src="${escapeHtml(recipe.image)}" alt="${escapeHtml(recipe.title)}" loading="lazy" />` : '<div class="recipe-card__no-image">🍪</div>'}
-      <div class="recipe-card__body">
-        <h2 class="recipe-card__title">${escapeHtml(recipe.title)}</h2>
-        ${recipe.description ? `<p class="recipe-card__desc">${escapeHtml(recipe.description)}</p>` : ''}
-        <div class="recipe-card__meta">
-          ${recipe.prepTime ? `<span>⏱ Prep: ${escapeHtml(String(recipe.prepTime))}</span>` : ''}
-          ${recipe.difficulty ? `<span>📊 ${escapeHtml(recipe.difficulty)}</span>` : ''}
-        </div>
-        <a href="recipe.html?id=${encodeURIComponent(recipe._id)}" class="btn btn--primary">View Recipe</a>
-      </div>
-    </article>
-  `).join('');
+  recipes.forEach(recipe => grid.appendChild(createRecipeCard(recipe)));
 }
 
-// Escape HTML to prevent XSS
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-// Check API health on page load (optional, non-blocking)
-async function checkHealth() {
-  try {
-    const res = await fetch(`${API_BASE}/health`);
-    if (!res.ok) console.warn('API health check failed');
-  } catch {
-    console.warn('API health check unreachable');
-  }
-}
-
-// Init
 document.addEventListener('DOMContentLoaded', () => {
-  checkHealth();
-  loadRecipes();
+  init();
+
+  // Beginner panels are on the index page — wire togglePanel globally
+  window.togglePanel = function(bodyId) {
+    const body = document.getElementById(bodyId);
+    const arrow = document.getElementById(bodyId + 'Arrow');
+    if (!body) return;
+    const isHidden = body.classList.toggle('collapsed');
+    if (arrow) arrow.textContent = isHidden ? '▼' : '▲';
+  };
+
+  // Banner toggle
+  const bannerToggle = document.getElementById('bannerToggle');
+  const beginnerPanels = document.getElementById('beginnerPanels');
+  const toggleArrow = document.getElementById('toggleArrow');
+  if (bannerToggle && beginnerPanels) {
+    bannerToggle.addEventListener('click', () => {
+      const isOpen = bannerToggle.getAttribute('aria-expanded') === 'true';
+      bannerToggle.setAttribute('aria-expanded', String(!isOpen));
+      beginnerPanels.style.display = isOpen ? 'none' : '';
+      if (toggleArrow) toggleArrow.textContent = isOpen ? '▼' : '▲';
+    });
+  }
 });
