@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Beginner baking tips to help you bake perfect cookies every time." />
+  <title>Beginner Tips – Cookie Baking Hub</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header>
+    <nav class="nav-container" aria-label="Main navigation">
+      <a href="index.html" class="nav-logo">🍪 Cookie<span>Hub</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#recipes">Recipes</a></li>
+        <li><a href="beginner.html">Beginner Tips</a></li>
+      </ul>
+    </nav>
+    <div class="nav-overlay" aria-hidden="true"></div>
+  </header>
+
+  <section class="hero" aria-label="Hero">
+    <h1>Beginner Baking Tips</h1>
+    <p>New to baking cookies? These essential tips will help you get great results from your very first batch.</p>
+  </section>
+
+  <main>
+    <h2 class="section-title">Tips &amp; Techniques</h2>
+    <div id="tipsContainer" class="tips-grid"></div>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Cookie Baking Hub. Made with ❤️ and butter.</p>
+  </footer>
+
+  <script src="js/beginner.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const toggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    const overlay = document.querySelector('.nav-overlay');
+
+    function closeNav() {
+      toggle.classList.remove('open');
+      navLinks.classList.remove('open');
+      overlay.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      toggle.classList.toggle('open', open);
+      overlay.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+
+    overlay.addEventListener('click', closeNav);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+  </script>
+</body>
+</html>
