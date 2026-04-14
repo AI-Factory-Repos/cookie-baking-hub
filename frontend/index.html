@@ -3,193 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Cookie Baking Hub – discover delicious cookie recipes for every skill level." />
   <title>Cookie Baking Hub</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <h1>🍪 Cookie Baking Hub</h1>
-      <p class="tagline">Delicious recipes for every baker</p>
-    </div>
+
+  <header>
+    <nav class="nav-container" aria-label="Main navigation">
+      <a href="index.html" class="nav-logo">🍪 Cookie<span>Hub</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#recipes">Recipes</a></li>
+        <li><a href="beginner.html">Beginner Tips</a></li>
+      </ul>
+    </nav>
+    <div class="nav-overlay" aria-hidden="true"></div>
   </header>
 
-  <main class="main-content">
-    <!-- Beginner Tips Banner -->
-    <section class="beginner-banner" id="beginnerBanner">
-      <button class="banner-toggle" id="bannerToggle" aria-expanded="true" aria-controls="beginnerPanels">
-        <span class="banner-icon">🎓</span>
-        <span>New to baking? Check out our Beginner Guides</span>
-        <span class="toggle-arrow" id="toggleArrow">▲</span>
-      </button>
+  <section class="hero" aria-label="Hero">
+    <h1>Bake Perfect Cookies Every Time</h1>
+    <p>Browse our collection of tried-and-tested cookie recipes, from simple classics to creative creations.</p>
+    <a href="#recipes" class="btn btn-accent">Explore Recipes</a>
+  </section>
 
-      <div class="beginner-panels" id="beginnerPanels">
-        <!-- Measurement Conversions -->
-        <div class="tip-panel" id="panelMeasurements">
-          <div class="tip-panel-header" onclick="togglePanel('measurementsBody')">
-            <span>📏 Measurement Conversions</span>
-            <span class="panel-arrow" id="measurementsBodyArrow">▼</span>
-          </div>
-          <div class="tip-panel-body" id="measurementsBody">
-            <table class="conversion-table">
-              <thead>
-                <tr><th>Ingredient</th><th>US</th><th>Metric</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>All-purpose flour</td><td>1 cup</td><td>120 g</td></tr>
-                <tr><td>Granulated sugar</td><td>1 cup</td><td>200 g</td></tr>
-                <tr><td>Brown sugar (packed)</td><td>1 cup</td><td>220 g</td></tr>
-                <tr><td>Powdered sugar</td><td>1 cup</td><td>120 g</td></tr>
-                <tr><td>Butter</td><td>1 stick (½ cup)</td><td>113 g</td></tr>
-                <tr><td>Butter</td><td>1 cup</td><td>227 g</td></tr>
-                <tr><td>Cocoa powder</td><td>1 cup</td><td>85 g</td></tr>
-                <tr><td>Chocolate chips</td><td>1 cup</td><td>170 g</td></tr>
-                <tr><td>Honey / syrup</td><td>1 tbsp</td><td>21 g</td></tr>
-                <tr><td>Milk / water</td><td>1 cup</td><td>240 ml</td></tr>
-                <tr><td>1 tablespoon</td><td>3 teaspoons</td><td>15 ml</td></tr>
-                <tr><td>¼ cup</td><td>4 tablespoons</td><td>60 ml</td></tr>
-              </tbody>
-            </table>
-            <p class="tip-note">💡 <strong>Pro tip:</strong> Use a kitchen scale for flour and sugar — it's more accurate than measuring cups and leads to consistent results!</p>
-          </div>
-        </div>
+  <main id="recipes">
+    <h2 class="section-title">All Recipes</h2>
 
-        <!-- Baking Terminology -->
-        <div class="tip-panel" id="panelTerminology">
-          <div class="tip-panel-header" onclick="togglePanel('terminologyBody')">
-            <span>📖 Baking Terminology</span>
-            <span class="panel-arrow" id="terminologyBodyArrow">▼</span>
-          </div>
-          <div class="tip-panel-body" id="terminologyBody">
-            <dl class="terminology-list">
-              <dt>Cream</dt>
-              <dd>Beat butter and sugar together vigorously until the mixture is pale, light, and fluffy (about 3–5 min with a mixer). This incorporates air for tender cookies.</dd>
+    <div class="filters">
+      <input class="filter-input" type="search" id="searchInput" placeholder="Search recipes…" aria-label="Search recipes" />
+      <button class="filter-btn active" data-difficulty="">All</button>
+      <button class="filter-btn" data-difficulty="beginner">Beginner</button>
+      <button class="filter-btn" data-difficulty="intermediate">Intermediate</button>
+      <button class="filter-btn" data-difficulty="advanced">Advanced</button>
+    </div>
 
-              <dt>Fold</dt>
-              <dd>Gently combine ingredients using a spatula in a sweeping under-and-over motion. Used to avoid deflating whipped eggs or over-developing gluten.</dd>
-
-              <dt>Room temperature</dt>
-              <dd>Butter and eggs at ~68–72°F (20–22°C). Cold butter won't cream properly; cold eggs can cause the batter to curdle. Leave them out 30–60 min before baking.</dd>
-
-              <dt>Chill the dough</dt>
-              <dd>Refrigerate cookie dough (usually 30 min to overnight) so cookies spread less and develop more complex flavour.</dd>
-
-              <dt>Soft peaks / stiff peaks</dt>
-              <dd>Stages of whipped cream or egg whites. Soft peaks droop when the beater is lifted; stiff peaks stand straight up.</dd>
-
-              <dt>Scant</dt>
-              <dd>Slightly less than the stated amount — e.g. "a scant teaspoon" means just under 1 tsp.</dd>
-
-              <dt>Heaped / heaping</dt>
-              <dd>More than the stated amount, mounded above the rim of the spoon.</dd>
-
-              <dt>Zest</dt>
-              <dd>The colourful outer rind of citrus fruit, grated finely. Contains essential oils that add bright flavour. Avoid the white pith — it's bitter.</dd>
-
-              <dt>Bain-marie / double boiler</dt>
-              <dd>A bowl set over a pot of barely simmering water to gently melt chocolate or heat eggs without scorching.</dd>
-
-              <dt>Bench rest</dt>
-              <dd>Leaving dough to rest on the counter for a few minutes so the gluten relaxes and it becomes easier to roll or shape.</dd>
-            </dl>
-          </div>
-        </div>
-
-        <!-- Oven Temperature Guide -->
-        <div class="tip-panel" id="panelTemperature">
-          <div class="tip-panel-header" onclick="togglePanel('temperatureBody')">
-            <span>🌡️ Oven Temperature Guide</span>
-            <span class="panel-arrow" id="temperatureBodyArrow">▼</span>
-          </div>
-          <div class="tip-panel-body" id="temperatureBody">
-            <table class="conversion-table">
-              <thead>
-                <tr><th>Description</th><th>°F</th><th>°C</th><th>Gas Mark</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>Very low / slow</td><td>250°F</td><td>120°C</td><td>½</td></tr>
-                <tr><td>Low</td><td>300°F</td><td>150°C</td><td>2</td></tr>
-                <tr><td>Moderately low</td><td>325°F</td><td>165°C</td><td>3</td></tr>
-                <tr><td>Moderate (most cookies)</td><td>350°F</td><td>175°C</td><td>4</td></tr>
-                <tr><td>Moderately hot</td><td>375°F</td><td>190°C</td><td>5</td></tr>
-                <tr><td>Hot</td><td>400°F</td><td>200°C</td><td>6</td></tr>
-                <tr><td>Very hot</td><td>425–450°F</td><td>220–230°C</td><td>7–8</td></tr>
-              </tbody>
-            </table>
-            <div class="oven-tips">
-              <h4>🔍 Oven Tips for Beginners</h4>
-              <ul>
-                <li><strong>Preheat fully:</strong> Always let your oven reach the target temperature before baking — at least 10–15 minutes.</li>
-                <li><strong>Oven thermometer:</strong> Most home ovens run 25–50°F off. A $10 oven thermometer is one of the best baking investments you can make.</li>
-                <li><strong>Fan / convection:</strong> Reduce the recipe temperature by 25°F (15°C) when using a fan-assisted / convection setting.</li>
-                <li><strong>Rack position:</strong> Bake cookies in the centre of the oven for the most even heat. Rotate the tray halfway through for best results.</li>
-                <li><strong>Dark vs light pans:</strong> Dark pans absorb more heat and can over-brown the bottoms. Prefer light or medium-coloured pans, or reduce temp by 25°F.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- Doneness Visual Cues -->
-        <div class="tip-panel" id="panelDoneness">
-          <div class="tip-panel-header" onclick="togglePanel('donenessBody')">
-            <span>👀 Visual Cues for Doneness</span>
-            <span class="panel-arrow" id="donenessBodyArrow">▼</span>
-          </div>
-          <div class="tip-panel-body" id="donenessBody">
-            <div class="doneness-grid">
-              <div class="doneness-card underdone">
-                <div class="doneness-icon">😐</div>
-                <h4>Underdone</h4>
-                <ul>
-                  <li>Very shiny, wet-looking surface</li>
-                  <li>Edges have not set; dough still spreads when touched</li>
-                  <li>Pale all over with no colour on edges</li>
-                  <li>Sinks in completely when pressed</li>
-                </ul>
-                <p class="doneness-action">➕ Add 2–3 more minutes</p>
-              </div>
-              <div class="doneness-card perfect">
-                <div class="doneness-icon">😍</div>
-                <h4>Perfect</h4>
-                <ul>
-                  <li>Edges are set and lightly golden</li>
-                  <li>Centre looks slightly underdone / glossy — <strong>this is correct!</strong></li>
-                  <li>Cookie springs back slowly when gently pressed</li>
-                  <li>Smells nutty and buttery</li>
-                </ul>
-                <p class="doneness-action">✅ Remove from oven now — it will firm up as it cools</p>
-              </div>
-              <div class="doneness-card overdone">
-                <div class="doneness-icon">😬</div>
-                <h4>Overdone</h4>
-                <ul>
-                  <li>Deep brown or dark edges</li>
-                  <li>Very firm / crunchy when still hot</li>
-                  <li>Cracked surface with a dry appearance</li>
-                  <li>Smells slightly burnt</li>
-                </ul>
-                <p class="doneness-action">⚠️ Next batch: reduce time by 2 min or lower temp 25°F</p>
-              </div>
-            </div>
-            <p class="tip-note">💡 <strong>Carry-over cooking:</strong> Cookies continue cooking on the hot tray for 2–3 minutes after leaving the oven. Always let them cool on the tray before moving!</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Recipe list -->
-    <section class="recipes-section">
-      <h2 class="section-title">Our Recipes</h2>
-      <div class="recipe-grid" id="recipeGrid">
-        <p class="loading-msg" id="loadingMsg">Loading recipes…</p>
-      </div>
-    </section>
+    <div id="recipesContainer" class="recipes-grid" aria-live="polite" aria-label="Recipe list"></div>
   </main>
 
-  <footer class="site-footer">
-    <p>🍪 Cookie Baking Hub &mdash; Happy Baking!</p>
+  <footer>
+    <p>&copy; <span id="year"></span> Cookie Baking Hub. Made with ❤️ and butter.</p>
   </footer>
 
   <script src="js/app.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile nav
+    const toggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    const overlay = document.querySelector('.nav-overlay');
+
+    function closeNav() {
+      toggle.classList.remove('open');
+      navLinks.classList.remove('open');
+      overlay.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      toggle.classList.toggle('open', open);
+      overlay.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+
+    overlay.addEventListener('click', closeNav);
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+  </script>
 </body>
 </html>
