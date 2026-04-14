@@ -1,87 +1,79 @@
 const API_BASE = '/api';
 
-async function fetchRecipes() {
-  const res = await fetch(`${API_BASE}/`);
-  if (!res.ok) throw new Error(`Server error: ${res.status}`);
-  return res.json();
+// Utility: show/hide loading spinner
+function setLoading(container, isLoading) {
+  if (isLoading) {
+    container.innerHTML = '<div class="loading"><span class="spinner"></span> Loading recipes…</div>';
+  }
 }
 
-function difficultyClass(difficulty) {
-  if (!difficulty) return '';
-  const d = difficulty.toLowerCase();
-  if (d === 'easy')   return 'badge--easy';
-  if (d === 'medium') return 'badge--medium';
-  if (d === 'hard')   return 'badge--hard';
-  return '';
+// Utility: show error message
+function showError(container, message) {
+  container.innerHTML = `<div class="error-message"><p>⚠️ ${message}</p><button onclick="loadRecipes()">Retry</button></div>`;
 }
 
-function formatTime(minutes) {
-  if (!minutes && minutes !== 0) return null;
-  if (minutes < 60) return `${minutes} min`;
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return m > 0 ? `${h}h ${m}min` : `${h}h`;
-}
-
-function renderRecipes(recipes) {
-  const list = Array.isArray(recipes) ? recipes : (recipes.data || recipes.recipes || []);
+// Fetch all recipes from GET /api/
+async function loadRecipes() {
   const grid = document.getElementById('recipe-grid');
-  const loading = document.getElementById('loading');
-  const errorEl = document.getElementById('error-message');
+  if (!grid) return;
 
-  if (loading) loading.hidden = true;
+  setLoading(grid, true);
 
-  if (!list.length) {
-    grid.innerHTML = '<p class="state-message">No recipes found.</p>';
+  try {
+    const response = await fetch(`${API_BASE}/`);
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    }
+    const recipes = await response.json();
+    renderRecipeGrid(grid, recipes);
+  } catch (err) {
+    console.error('Failed to load recipes:', err);
+    showError(grid, 'Failed to load recipes. Please try again.');
+  }
+}
+
+// Render recipe cards into the grid
+function renderRecipeGrid(container, recipes) {
+  if (!recipes || recipes.length === 0) {
+    container.innerHTML = '<p class="no-results">No recipes found.</p>';
     return;
   }
 
-  grid.innerHTML = list.map(recipe => {
-    const prepLabel = formatTime(recipe.prepTime);
-    const cookLabel = formatTime(recipe.cookTime);
-    const timeStr = [prepLabel && `Prep: ${prepLabel}`, cookLabel && `Cook: ${cookLabel}`].filter(Boolean).join(' · ');
-    return `
-      <article class="recipe-card">
-        <h2>${escHtml(recipe.name)}</h2>
-        <p>${escHtml(recipe.description || '')}</p>
-        <div class="card-footer">
-          <span class="meta-badge ${difficultyClass(recipe.difficulty)}">${escHtml(recipe.difficulty || 'Unknown')}</span>
-          ${timeStr ? `<span style="font-size:.82rem;color:var(--color-text-muted)">${escHtml(timeStr)}</span>` : ''}
+  container.innerHTML = recipes.map(recipe => `
+    <article class="recipe-card">
+      ${recipe.image ? `<img src="${escapeHtml(recipe.image)}" alt="${escapeHtml(recipe.title)}" loading="lazy" />` : '<div class="recipe-card__no-image">🍪</div>'}
+      <div class="recipe-card__body">
+        <h2 class="recipe-card__title">${escapeHtml(recipe.title)}</h2>
+        ${recipe.description ? `<p class="recipe-card__desc">${escapeHtml(recipe.description)}</p>` : ''}
+        <div class="recipe-card__meta">
+          ${recipe.prepTime ? `<span>⏱ Prep: ${escapeHtml(String(recipe.prepTime))}</span>` : ''}
+          ${recipe.difficulty ? `<span>📊 ${escapeHtml(recipe.difficulty)}</span>` : ''}
         </div>
-        <div style="margin-top:.9rem">
-          <a href="recipe.html?id=${encodeURIComponent(recipe._id)}" class="btn btn--primary" style="width:100%;text-align:center">View Recipe</a>
-        </div>
-      </article>
-    `;
-  }).join('');
+        <a href="recipe.html?id=${encodeURIComponent(recipe._id)}" class="btn btn--primary">View Recipe</a>
+      </div>
+    </article>
+  `).join('');
 }
 
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+// Escape HTML to prevent XSS
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
-function showError(message) {
-  const errorEl = document.getElementById('error-message');
-  const loading = document.getElementById('loading');
-  if (loading) loading.hidden = true;
-  if (errorEl) {
-    errorEl.textContent = message;
-    errorEl.hidden = false;
-  }
-}
-
-async function init() {
+// Check API health on page load (optional, non-blocking)
+async function checkHealth() {
   try {
-    const data = await fetchRecipes();
-    renderRecipes(data);
-  } catch (err) {
-    showError('Failed to load recipes. Please try again later.');
-    console.error(err);
+    const res = await fetch(`${API_BASE}/health`);
+    if (!res.ok) console.warn('API health check failed');
+  } catch {
+    console.warn('API health check unreachable');
   }
 }
 
-document.addEventListener('DOMContentLoaded', init);
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  checkHealth();
+  loadRecipes();
+});
