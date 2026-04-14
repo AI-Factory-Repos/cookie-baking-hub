@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cookie Baking Hub</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo">
+        <span class="logo-icon">🍪</span>
+        <span class="logo-text">Cookie Baking Hub</span>
+      </div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a href="#" class="nav-link active" data-view="home">All Recipes</a></li>
+        </ul>
+      </nav>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span class="hamburger"></span>
+        <span class="hamburger"></span>
+        <span class="hamburger"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="site-main" id="main-content">
+    <!-- Recipe List View -->
+    <section class="view" id="view-home" aria-label="Recipe list">
+      <div class="container">
+        <div class="page-heading">
+          <h1>All Cookie Recipes</h1>
+          <p class="page-subtitle">Pick a recipe and start baking!</p>
+        </div>
+
+        <!-- Status messages -->
+        <div class="status-message status-loading" id="loading-indicator" role="status" aria-live="polite" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          Loading recipes…
+        </div>
+        <div class="status-message status-error" id="error-message" role="alert" aria-live="assertive" hidden></div>
+
+        <!-- Recipe cards grid -->
+        <div class="recipe-grid" id="recipe-grid" aria-label="Recipe cards"></div>
+      </div>
+    </section>
+
+    <!-- Recipe Detail View -->
+    <section class="view" id="view-detail" aria-label="Recipe detail" hidden>
+      <div class="container">
+        <button class="btn btn-back" id="btn-back" aria-label="Back to all recipes">
+          &#8592; Back to Recipes
+        </button>
+
+        <!-- Status messages (detail) -->
+        <div class="status-message status-loading" id="detail-loading" role="status" aria-live="polite" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          Loading recipe…
+        </div>
+        <div class="status-message status-error" id="detail-error" role="alert" aria-live="assertive" hidden></div>
+
+        <!-- Recipe detail content -->
+        <article class="recipe-detail" id="recipe-detail" hidden>
+          <header class="recipe-detail-header">
+            <h1 class="recipe-detail-title" id="detail-title"></h1>
+            <p class="recipe-detail-description" id="detail-description"></p>
+            <div class="recipe-meta" id="detail-meta"></div>
+          </header>
+
+          <div class="recipe-detail-body">
+            <!-- Ingredients -->
+            <section class="ingredients-section" aria-labelledby="ingredients-heading">
+              <h2 id="ingredients-heading">Ingredients</h2>
+              <ul class="ingredients-list" id="detail-ingredients"></ul>
+            </section>
+
+            <!-- Step-by-step instructions -->
+            <section class="steps-section" aria-labelledby="steps-heading">
+              <h2 id="steps-heading">Instructions</h2>
+              <ol class="steps-list" id="detail-steps"></ol>
+            </section>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; <span id="footer-year"></span> Cookie Baking Hub. Happy baking! 🍪</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
