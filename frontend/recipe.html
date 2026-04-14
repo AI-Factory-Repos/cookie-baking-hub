@@ -3,91 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recipe | Cookie Baking Hub</title>
+  <meta name="description" content="Cookie recipe details – Cookie Baking Hub" />
+  <title>Recipe – Cookie Baking Hub</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <a href="index.html" class="back-link">← Back to Recipes</a>
-      <h1>🍪 Cookie Baking Hub</h1>
-    </div>
+
+  <header>
+    <nav class="nav-container" aria-label="Main navigation">
+      <a href="index.html" class="nav-logo">🍪 Cookie<span>Hub</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#recipes">Recipes</a></li>
+        <li><a href="beginner.html">Beginner Tips</a></li>
+      </ul>
+    </nav>
+    <div class="nav-overlay" aria-hidden="true"></div>
   </header>
 
-  <main class="main-content recipe-detail-main">
-    <div id="recipeContainer">
-      <p class="loading-msg">Loading recipe…</p>
-    </div>
-
-    <!-- Troubleshooting Tips Section (populated by JS) -->
-    <section class="recipe-tips-section" id="recipeTipsSection" style="display:none;">
-      <h2 class="tips-section-title">🛠️ Troubleshooting Tips</h2>
-      <p class="tips-intro">Something went wrong? Here are common issues and fixes for this type of cookie.</p>
-      <div class="tips-accordion" id="tipsAccordion"></div>
-    </section>
-
-    <!-- Inline Beginner Quick-Reference -->
-    <section class="quick-ref-section">
-      <h2 class="tips-section-title">📚 Quick Reference</h2>
-      <div class="quick-ref-grid">
-        <div class="quick-ref-card">
-          <h3>🌡️ Temp Converter</h3>
-          <div class="temp-converter">
-            <div class="converter-row">
-              <label for="fahInput">°F</label>
-              <input type="number" id="fahInput" placeholder="e.g. 350" />
-              <span>=</span>
-              <span id="celOutput" class="conv-result">—</span>
-              <span>°C</span>
-            </div>
-            <div class="converter-row">
-              <label for="celInput">°C</label>
-              <input type="number" id="celInput" placeholder="e.g. 175" />
-              <span>=</span>
-              <span id="fahOutput" class="conv-result">—</span>
-              <span>°F</span>
-            </div>
-          </div>
-        </div>
-        <div class="quick-ref-card">
-          <h3>📏 Volume → Weight</h3>
-          <div class="vol-converter">
-            <select id="ingredientSelect">
-              <option value="120">All-purpose flour (1 cup)</option>
-              <option value="200">Granulated sugar (1 cup)</option>
-              <option value="220">Brown sugar packed (1 cup)</option>
-              <option value="113">Butter (1 stick)</option>
-              <option value="227">Butter (1 cup)</option>
-              <option value="85">Cocoa powder (1 cup)</option>
-              <option value="170">Chocolate chips (1 cup)</option>
-              <option value="120">Powdered sugar (1 cup)</option>
-            </select>
-            <div class="converter-row">
-              <input type="number" id="cupsInput" placeholder="cups" min="0" step="0.25" />
-              <span>cups =</span>
-              <span id="gramsOutput" class="conv-result">—</span>
-              <span>g</span>
-            </div>
-          </div>
-        </div>
-        <div class="quick-ref-card doneness-ref">
-          <h3>👀 Doneness at a Glance</h3>
-          <ul class="doneness-quick-list">
-            <li><span class="badge badge-under">Underdone</span> Shiny centre, pale edges, spreads when touched</li>
-            <li><span class="badge badge-perfect">Perfect</span> Golden edges, glossy-but-set centre, springs back slowly</li>
-            <li><span class="badge badge-over">Overdone</span> Dark edges, very firm, dry cracked surface</li>
-          </ul>
-          <p class="tip-note">Remember: cookies keep cooking on the hot tray for ~3 min after you remove them!</p>
-        </div>
-      </div>
-    </section>
+  <main>
+    <a href="index.html" class="back-link btn btn-outline" style="margin-bottom:1.5rem;display:inline-block;">&larr; Back to Recipes</a>
+    <div id="recipeContainer" class="recipe-detail" aria-live="polite"></div>
   </main>
 
-  <footer class="site-footer">
-    <p>🍪 Cookie Baking Hub &mdash; Happy Baking!</p>
+  <footer>
+    <p>&copy; <span id="year"></span> Cookie Baking Hub. Made with ❤️ and butter.</p>
   </footer>
 
   <script src="js/recipe.js"></script>
-  <script src="js/beginner.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Mobile nav
+    const toggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    const overlay = document.querySelector('.nav-overlay');
+
+    function closeNav() {
+      toggle.classList.remove('open');
+      navLinks.classList.remove('open');
+      overlay.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      toggle.classList.toggle('open', open);
+      overlay.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+
+    overlay.addEventListener('click', closeNav);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+  </script>
 </body>
 </html>
