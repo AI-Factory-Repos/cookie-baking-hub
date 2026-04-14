@@ -1,346 +1,249 @@
-require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
+require('dotenv').config();
+const mongoose = require('mongoose');
 const connectDB = require('../config/db');
 const Recipe = require('../models/Recipe');
 
 const recipes = [
   {
-    name: 'Chocolate Chip Cookies',
-    description:
-      'Classic golden cookies loaded with semi-sweet chocolate chips — crispy on the edges and chewy in the center.',
-    difficulty: 'easy',
-    prep_time: 15,
-    bake_time: 11,
-    ingredients: [
-      '2 1/4 cups all-purpose flour',
-      '1 tsp baking soda',
-      '1 tsp salt',
-      '1 cup (2 sticks) unsalted butter, softened',
-      '3/4 cup granulated sugar',
-      '3/4 cup packed brown sugar',
-      '2 large eggs',
-      '2 tsp vanilla extract',
-      '2 cups semi-sweet chocolate chips',
-    ],
+    title: 'Classic Chocolate Chip Cookies',
+    description: 'The quintessential chocolate chip cookie — crispy edges, chewy center, loaded with chocolate chips.',
+    prepTime: 15,
+    cookTime: 11,
+    servings: 48,
+    difficulty: 'Easy',
     steps: [
       {
-        step_number: 1,
-        instruction: 'Preheat oven to 375°F (190°C). Line baking sheets with parchment paper.',
-        image_url: null,
+        stepNumber: 1,
+        instruction: 'Preheat your oven to 375°F (190°C). Measure out all ingredients before you begin.',
+        imageUrl: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80'
       },
       {
-        step_number: 2,
-        instruction: 'Whisk together flour, baking soda, and salt in a bowl; set aside.',
-        image_url: null,
+        stepNumber: 2,
+        instruction: 'In a large bowl, whisk together 2 1/4 cups all-purpose flour, 1 tsp baking soda, and 1 tsp salt. Set aside.',
+        imageUrl: 'https://images.unsplash.com/photo-1612201803935-bc31b29f9b14?w=800&q=80'
       },
       {
-        step_number: 3,
-        instruction:
-          'Beat butter, granulated sugar, and brown sugar with an electric mixer on medium speed until light and fluffy, about 3 minutes.',
-        image_url: null,
+        stepNumber: 3,
+        instruction: 'Beat 1 cup softened butter with 3/4 cup granulated sugar and 3/4 cup packed brown sugar until light and fluffy, about 3–4 minutes.',
+        imageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80'
       },
       {
-        step_number: 4,
-        instruction: 'Add eggs one at a time, beating well after each addition. Mix in vanilla extract.',
-        image_url: null,
+        stepNumber: 4,
+        instruction: 'Add 2 large eggs one at a time, beating well after each addition. Mix in 2 tsp vanilla extract.',
+        imageUrl: 'https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=800&q=80'
       },
       {
-        step_number: 5,
-        instruction: 'Gradually mix in the flour mixture on low speed until just combined. Stir in chocolate chips.',
-        image_url: null,
+        stepNumber: 5,
+        instruction: 'Gradually blend the flour mixture into the butter mixture, stirring just until combined. Fold in 2 cups chocolate chips.',
+        imageUrl: 'https://images.unsplash.com/photo-1590080876351-41429d46ffd5?w=800&q=80'
       },
       {
-        step_number: 6,
-        instruction:
-          'Drop rounded tablespoons of dough onto prepared baking sheets, spacing 2 inches apart.',
-        image_url: null,
+        stepNumber: 6,
+        instruction: 'Drop rounded tablespoons of dough onto ungreased baking sheets, spacing them 2 inches apart.',
+        imageUrl: 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=800&q=80'
       },
       {
-        step_number: 7,
-        instruction:
-          'Bake for 9–11 minutes or until edges are golden. Cool on baking sheet for 5 minutes before transferring to a wire rack.',
-        image_url: null,
-      },
-    ],
-    tips: [
-      'For thicker cookies, chill the dough for 30 minutes before baking.',
-      'Use a mix of milk and dark chocolate chips for extra depth of flavor.',
-      'Pull cookies from the oven when the centers still look slightly underdone — they will firm up as they cool.',
-    ],
+        stepNumber: 7,
+        instruction: 'Bake for 9–11 minutes or until golden brown. Cool on baking sheets for 2 minutes before transferring to wire racks.',
+        imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=80'
+      }
+    ]
   },
   {
-    name: 'Sugar Cookies',
-    description:
-      'Soft, buttery cut-out sugar cookies with a light vanilla flavor — perfect for decorating with icing.',
-    difficulty: 'medium',
-    prep_time: 30,
-    bake_time: 10,
-    ingredients: [
-      '2 3/4 cups all-purpose flour',
-      '1 tsp baking soda',
-      '1/2 tsp baking powder',
-      '1/2 tsp salt',
-      '1 cup (2 sticks) unsalted butter, softened',
-      '1 1/2 cups granulated sugar',
-      '1 large egg',
-      '1 tsp vanilla extract',
-      '1/2 tsp almond extract',
-    ],
+    title: 'Snickerdoodle Cookies',
+    description: 'Soft and chewy cookies rolled in cinnamon sugar with a signature tangy flavor from cream of tartar.',
+    prepTime: 20,
+    cookTime: 10,
+    servings: 36,
+    difficulty: 'Easy',
     steps: [
       {
-        step_number: 1,
-        instruction: 'Whisk together flour, baking soda, baking powder, and salt; set aside.',
-        image_url: null,
+        stepNumber: 1,
+        instruction: 'Preheat oven to 375°F (190°C). Line baking sheets with parchment paper. Measure all ingredients.',
+        imageUrl: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80'
       },
       {
-        step_number: 2,
-        instruction: 'Beat butter and sugar until pale and fluffy, about 3–4 minutes.',
-        image_url: null,
+        stepNumber: 2,
+        instruction: 'Whisk together 2 3/4 cups flour, 2 tsp cream of tartar, 1 tsp baking soda, and 1/4 tsp salt in a bowl.',
+        imageUrl: 'https://images.unsplash.com/photo-1612201803935-bc31b29f9b14?w=800&q=80'
       },
       {
-        step_number: 3,
-        instruction: 'Add egg, vanilla extract, and almond extract; beat until combined.',
-        image_url: null,
+        stepNumber: 3,
+        instruction: 'Cream 1 cup softened butter and 1 1/2 cups sugar together until pale and fluffy, about 4 minutes.',
+        imageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80'
       },
       {
-        step_number: 4,
-        instruction: 'Gradually add flour mixture, mixing on low until a soft dough forms.',
-        image_url: null,
+        stepNumber: 4,
+        instruction: 'Beat in 2 eggs until fully incorporated. Gradually mix in the flour mixture until a soft dough forms.',
+        imageUrl: 'https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=800&q=80'
       },
       {
-        step_number: 5,
-        instruction:
-          'Divide dough in half, flatten into discs, wrap in plastic wrap, and refrigerate for at least 1 hour.',
-        image_url: null,
+        stepNumber: 5,
+        instruction: 'Mix 3 tbsp sugar with 1 tbsp cinnamon in a small bowl to make the coating.',
+        imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80'
       },
       {
-        step_number: 6,
-        instruction:
-          'Preheat oven to 375°F (190°C). Roll dough to 1/4-inch thickness on a lightly floured surface and cut into shapes.',
-        image_url: null,
+        stepNumber: 6,
+        instruction: 'Roll dough into 1-inch balls, then roll each ball in the cinnamon-sugar mixture to coat evenly. Place on prepared baking sheets.',
+        imageUrl: 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=800&q=80'
       },
       {
-        step_number: 7,
-        instruction:
-          'Place on parchment-lined baking sheets and bake 8–10 minutes until edges are just set. Cool completely before decorating.',
-        image_url: null,
-      },
-    ],
-    tips: [
-      'Chilling the dough is essential — it prevents spreading and keeps shapes sharp.',
-      'Roll dough between two sheets of parchment to avoid sticking without adding extra flour.',
-      'Decorate with royal icing once completely cooled.',
-    ],
+        stepNumber: 7,
+        instruction: 'Bake for 8–10 minutes until set but still soft. Do not overbake — centers should look slightly underdone. Cool on a wire rack.',
+        imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=80'
+      }
+    ]
   },
   {
-    name: 'Oatmeal Raisin Cookies',
-    description:
-      'Hearty, chewy oatmeal cookies packed with plump raisins and warm cinnamon spice.',
-    difficulty: 'easy',
-    prep_time: 15,
-    bake_time: 12,
-    ingredients: [
-      '1 1/2 cups all-purpose flour',
-      '1 tsp baking soda',
-      '1 tsp ground cinnamon',
-      '1/2 tsp ground nutmeg',
-      '1/2 tsp salt',
-      '1 cup (2 sticks) unsalted butter, softened',
-      '3/4 cup granulated sugar',
-      '3/4 cup packed brown sugar',
-      '2 large eggs',
-      '1 tsp vanilla extract',
-      '3 cups old-fashioned rolled oats',
-      '1 1/2 cups raisins',
-    ],
+    title: 'Double Chocolate Fudge Cookies',
+    description: 'Rich, fudgy cookies packed with cocoa and chocolate chunks for the ultimate chocolate lover.',
+    prepTime: 15,
+    cookTime: 12,
+    servings: 30,
+    difficulty: 'Medium',
     steps: [
       {
-        step_number: 1,
-        instruction: 'Preheat oven to 350°F (175°C). Line baking sheets with parchment paper.',
-        image_url: null,
+        stepNumber: 1,
+        instruction: 'Preheat oven to 350°F (175°C). Line two baking sheets with parchment paper. Gather and measure all ingredients.',
+        imageUrl: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80'
       },
       {
-        step_number: 2,
-        instruction: 'Whisk flour, baking soda, cinnamon, nutmeg, and salt together; set aside.',
-        image_url: null,
+        stepNumber: 2,
+        instruction: 'Sift together 1 cup flour, 1/2 cup unsweetened cocoa powder, 1 tsp baking powder, and 1/4 tsp salt into a bowl.',
+        imageUrl: 'https://images.unsplash.com/photo-1612201803935-bc31b29f9b14?w=800&q=80'
       },
       {
-        step_number: 3,
-        instruction: 'Beat butter, granulated sugar, and brown sugar until creamy.',
-        image_url: null,
+        stepNumber: 3,
+        instruction: 'Melt 8 oz dark chocolate with 1/2 cup butter in a heatproof bowl over simmering water, stirring until smooth. Let cool slightly.',
+        imageUrl: 'https://images.unsplash.com/photo-1481391243133-f96216dcb5d2?w=800&q=80'
       },
       {
-        step_number: 4,
-        instruction: 'Add eggs and vanilla; beat well.',
-        image_url: null,
+        stepNumber: 4,
+        instruction: 'Whisk 1 1/2 cups sugar and 3 eggs into the cooled chocolate mixture until well combined and slightly thickened.',
+        imageUrl: 'https://images.unsplash.com/photo-1590080876351-41429d46ffd5?w=800&q=80'
       },
       {
-        step_number: 5,
-        instruction: 'Stir in flour mixture until just combined, then fold in oats and raisins.',
-        image_url: null,
+        stepNumber: 5,
+        instruction: 'Fold the dry ingredients into the chocolate mixture until just combined. Stir in 1 cup chocolate chunks.',
+        imageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80'
       },
       {
-        step_number: 6,
-        instruction:
-          'Drop heaping tablespoons of dough onto prepared baking sheets, 2 inches apart.',
-        image_url: null,
+        stepNumber: 6,
+        instruction: 'Scoop heaped tablespoons of batter onto prepared sheets, spacing 2 inches apart. The batter will be thick and fudgy.',
+        imageUrl: 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=800&q=80'
       },
       {
-        step_number: 7,
-        instruction:
-          'Bake 10–12 minutes until edges are lightly golden. Cool on sheet 5 minutes, then transfer to rack.',
-        image_url: null,
-      },
-    ],
-    tips: [
-      'Soak raisins in warm water for 10 minutes before using to make them extra plump.',
-      'Use old-fashioned oats, not quick oats, for the best chewy texture.',
-      'Add 1/2 cup chopped walnuts for a nutty variation.',
-    ],
+        stepNumber: 7,
+        instruction: 'Bake for 10–12 minutes until the tops are crackled and set but the centers are still soft. Cool completely on the pan.',
+        imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=80'
+      }
+    ]
   },
   {
-    name: 'Peanut Butter Cookies',
-    description:
-      'Rich, crumbly peanut butter cookies with the signature crosshatch pattern — a timeless classic.',
-    difficulty: 'easy',
-    prep_time: 15,
-    bake_time: 10,
-    ingredients: [
-      '1 1/4 cups all-purpose flour',
-      '3/4 tsp baking soda',
-      '1/4 tsp salt',
-      '1/2 cup (1 stick) unsalted butter, softened',
-      '1/2 cup granulated sugar, plus extra for rolling',
-      '1/2 cup packed brown sugar',
-      '1 cup creamy peanut butter',
-      '1 large egg',
-      '1 tsp vanilla extract',
-    ],
+    title: 'Oatmeal Raisin Cookies',
+    description: 'Hearty, chewy cookies with rolled oats, plump raisins, and warm cinnamon spice.',
+    prepTime: 15,
+    cookTime: 11,
+    servings: 48,
+    difficulty: 'Easy',
     steps: [
       {
-        step_number: 1,
-        instruction: 'Preheat oven to 350°F (175°C). Line baking sheets with parchment paper.',
-        image_url: null,
+        stepNumber: 1,
+        instruction: 'Preheat oven to 350°F (175°C). Soak 1 1/2 cups raisins in warm water for 10 minutes to plump them, then drain.',
+        imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80'
       },
       {
-        step_number: 2,
-        instruction: 'Whisk flour, baking soda, and salt in a bowl; set aside.',
-        image_url: null,
+        stepNumber: 2,
+        instruction: 'Whisk together 1 1/2 cups flour, 1 tsp baking soda, 1 tsp cinnamon, 1/2 tsp nutmeg, and 1/2 tsp salt.',
+        imageUrl: 'https://images.unsplash.com/photo-1612201803935-bc31b29f9b14?w=800&q=80'
       },
       {
-        step_number: 3,
-        instruction:
-          'Beat butter, granulated sugar, and brown sugar until light and fluffy, about 3 minutes.',
-        image_url: null,
+        stepNumber: 3,
+        instruction: 'Beat 1 cup softened butter, 1 cup brown sugar, and 1/2 cup granulated sugar until light and creamy, about 3 minutes.',
+        imageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80'
       },
       {
-        step_number: 4,
-        instruction: 'Add peanut butter, egg, and vanilla extract; beat until smooth.',
-        image_url: null,
+        stepNumber: 4,
+        instruction: 'Add 2 eggs and 1 tsp vanilla extract to the butter mixture, beating until smooth and fully combined.',
+        imageUrl: 'https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=800&q=80'
       },
       {
-        step_number: 5,
-        instruction: 'Gradually mix in the flour mixture until combined.',
-        image_url: null,
+        stepNumber: 5,
+        instruction: 'Stir in the flour mixture until just combined, then fold in 3 cups old-fashioned rolled oats and the drained raisins.',
+        imageUrl: 'https://images.unsplash.com/photo-1590080876351-41429d46ffd5?w=800&q=80'
       },
       {
-        step_number: 6,
-        instruction:
-          'Roll dough into 1-inch balls, roll in granulated sugar, and place 2 inches apart on prepared sheets.',
-        image_url: null,
+        stepNumber: 6,
+        instruction: 'Drop rounded tablespoons of dough onto ungreased baking sheets, pressing each mound down slightly with your palm.',
+        imageUrl: 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=800&q=80'
       },
       {
-        step_number: 7,
-        instruction:
-          'Press a fork into each ball twice to create a crosshatch pattern. Bake 9–11 minutes until set but still soft. Cool on sheet before moving.',
-        image_url: null,
-      },
-    ],
-    tips: [
-      'Do not overbake — cookies will firm up as they cool.',
-      'Chunky peanut butter can be substituted for added texture.',
-      'Press a chocolate kiss into the center right after baking for a delicious variation.',
-    ],
+        stepNumber: 7,
+        instruction: 'Bake for 9–11 minutes until the edges are golden but centers still look soft. Cool on baking sheet for 5 minutes before moving.',
+        imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=80'
+      }
+    ]
   },
   {
-    name: 'Snickerdoodles',
-    description:
-      'Soft and pillowy cinnamon-sugar cookies with a slightly tangy flavor from cream of tartar.',
-    difficulty: 'easy',
-    prep_time: 20,
-    bake_time: 10,
-    ingredients: [
-      '2 3/4 cups all-purpose flour',
-      '2 tsp cream of tartar',
-      '1 tsp baking soda',
-      '1/4 tsp salt',
-      '1 cup (2 sticks) unsalted butter, softened',
-      '1 1/2 cups granulated sugar',
-      '2 large eggs',
-      '1 tsp vanilla extract',
-      '3 tbsp granulated sugar (for rolling)',
-      '1 tbsp ground cinnamon (for rolling)',
-    ],
+    title: 'Sugar Cookies with Royal Icing',
+    description: 'Perfectly crisp cut-out sugar cookies decorated with smooth royal icing — ideal for any occasion.',
+    prepTime: 45,
+    cookTime: 10,
+    servings: 36,
+    difficulty: 'Hard',
     steps: [
       {
-        step_number: 1,
-        instruction: 'Preheat oven to 375°F (190°C). Line baking sheets with parchment paper.',
-        image_url: null,
+        stepNumber: 1,
+        instruction: 'Whisk together 3 cups flour, 1 tsp baking powder, and 1/2 tsp salt. Measure all remaining ingredients.',
+        imageUrl: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80'
       },
       {
-        step_number: 2,
-        instruction: 'Whisk together flour, cream of tartar, baking soda, and salt; set aside.',
-        image_url: null,
+        stepNumber: 2,
+        instruction: 'Beat 1 cup softened butter and 1 cup sugar until pale and fluffy. Mix in 1 egg, 1 tsp vanilla, and 1 tsp almond extract.',
+        imageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80'
       },
       {
-        step_number: 3,
-        instruction: 'Beat butter and 1 1/2 cups sugar until light and fluffy, about 3 minutes.',
-        image_url: null,
+        stepNumber: 3,
+        instruction: 'Gradually blend in the flour mixture until a smooth dough forms. Divide into two discs, wrap in plastic wrap, and refrigerate for at least 1 hour.',
+        imageUrl: 'https://images.unsplash.com/photo-1590080876351-41429d46ffd5?w=800&q=80'
       },
       {
-        step_number: 4,
-        instruction: 'Add eggs and vanilla; beat until combined.',
-        image_url: null,
+        stepNumber: 4,
+        instruction: 'Preheat oven to 375°F (190°C). On a lightly floured surface, roll dough to 1/4-inch thickness.',
+        imageUrl: 'https://images.unsplash.com/photo-1612201803935-bc31b29f9b14?w=800&q=80'
       },
       {
-        step_number: 5,
-        instruction: 'Gradually add flour mixture, mixing on low until a soft dough forms.',
-        image_url: null,
+        stepNumber: 5,
+        instruction: 'Cut out shapes using cookie cutters and place on parchment-lined baking sheets, spacing 1 inch apart.',
+        imageUrl: 'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=800&q=80'
       },
       {
-        step_number: 6,
-        instruction:
-          'Mix 3 tbsp sugar and 1 tbsp cinnamon in a small bowl. Roll dough into 1-inch balls and coat thoroughly in cinnamon-sugar.',
-        image_url: null,
+        stepNumber: 6,
+        instruction: 'Bake for 8–10 minutes until edges are just barely golden. Cool completely on a wire rack before decorating.',
+        imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=80'
       },
       {
-        step_number: 7,
-        instruction:
-          'Place balls 2 inches apart on prepared sheets. Bake 9–11 minutes until edges are set and centers look slightly underdone. Cool on sheet 5 minutes.',
-        image_url: null,
-      },
-    ],
-    tips: [
-      'Cream of tartar is what gives snickerdoodles their signature tangy flavor — do not skip it.',
-      'For thicker cookies, refrigerate the dough balls for 30 minutes before baking.',
-      'Be generous with the cinnamon-sugar coating for the best flavor.',
-    ],
-  },
+        stepNumber: 7,
+        instruction: 'Make royal icing by whisking 3 cups powdered sugar, 2 tbsp meringue powder, and 4–5 tbsp water until smooth and glossy. Pipe or spread onto cooled cookies and let set.',
+        imageUrl: 'https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=800&q=80'
+      }
+    ]
+  }
 ];
 
-async function seed() {
-  await connectDB();
-
-  await Recipe.deleteMany({});
-  console.log('Existing recipes cleared.');
-
-  const inserted = await Recipe.insertMany(recipes);
-  console.log(`Seeded ${inserted.length} recipes successfully:`);
-  inserted.forEach((r) => console.log(`  - ${r.name} (${r._id})`));
-
-  process.exit(0);
+async function seedDB() {
+  try {
+    await connectDB();
+    await Recipe.deleteMany({});
+    console.log('Existing recipes cleared.');
+    await Recipe.insertMany(recipes);
+    console.log(`Successfully seeded ${recipes.length} recipes with stock photo URLs.`);
+  } catch (err) {
+    console.error('Seeding error:', err);
+  } finally {
+    await mongoose.connection.close();
+    console.log('Database connection closed.');
+  }
 }
 
-seed().catch((err) => {
-  console.error('Seed failed:', err);
-  process.exit(1);
-});
+seedDB();
