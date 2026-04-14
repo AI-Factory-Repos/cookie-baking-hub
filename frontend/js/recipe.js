@@ -1,80 +1,129 @@
 const API_BASE = '/api';
 
-function getRecipeId() {
+function lazyImg(src, alt, className) {
+  const img = document.createElement('img');
+  img.alt = alt || '';
+  img.className = (className || '') + ' loading';
+  img.loading = 'lazy';
+  img.decoding = 'async';
+  img.addEventListener('load', () => { img.classList.remove('loading'); img.classList.add('loaded'); });
+  img.addEventListener('error', () => {
+    img.classList.remove('loading'); img.classList.add('loaded');
+    img.src = 'https://placehold.co/800x400?text=Cookie';
+  });
+  img.src = src;
+  return img;
+}
+
+function difficultyClass(level) {
+  return (level || '').toLowerCase();
+}
+
+async function loadRecipe() {
+  const container = document.getElementById('recipeContainer');
   const params = new URLSearchParams(window.location.search);
-  return params.get('id');
-}
-
-async function fetchRecipe(id) {
-  const res = await fetch(`${API_BASE}/${id}`);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
-}
-
-function renderRecipe(recipe) {
-  document.title = `${recipe.name} | Cookie Baking Hub`;
-
-  const container = document.getElementById('recipeContainer');
-
-  const img = recipe.image
-    ? `<img src="${recipe.image}" alt="${recipe.name}" class="detail-img" />`
-    : `<div class="detail-img-placeholder">🍪</div>`;
-
-  const metaItems = [
-    recipe.prepTime && `<div class="meta-item"><span class="meta-label">Prep</span><span>${recipe.prepTime}</span></div>`,
-    recipe.cookTime && `<div class="meta-item"><span class="meta-label">Cook</span><span>${recipe.cookTime}</span></div>`,
-    recipe.servings && `<div class="meta-item"><span class="meta-label">Serves</span><span>${recipe.servings}</span></div>`,
-    recipe.difficulty && `<div class="meta-item"><span class="meta-label">Difficulty</span><span class="difficulty difficulty-${recipe.difficulty.toLowerCase()}">${recipe.difficulty}</span></div>`,
-  ].filter(Boolean).join('');
-
-  const ingredients = recipe.ingredients && recipe.ingredients.length
-    ? `<section class="detail-section">
-        <h2>Ingredients</h2>
-        <ul class="ingredients-list">
-          ${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}
-        </ul>
-      </section>`
-    : '';
-
-  const instructions = recipe.instructions && recipe.instructions.length
-    ? `<section class="detail-section">
-        <h2>Instructions</h2>
-        <ol class="instructions-list">
-          ${recipe.instructions.map(s => `<li>${s}</li>`).join('')}
-        </ol>
-      </section>`
-    : '';
-
-  container.innerHTML = `
-    <article class="recipe-detail">
-      ${img}
-      <div class="detail-body">
-        <h1 class="detail-title">${recipe.name}</h1>
-        ${recipe.description ? `<p class="detail-desc">${recipe.description}</p>` : ''}
-        <div class="detail-meta">${metaItems}</div>
-        ${ingredients}
-        ${instructions}
-      </div>
-    </article>
-  `;
-}
-
-async function init() {
-  const id = getRecipeId();
-  const container = document.getElementById('recipeContainer');
+  const id = params.get('id');
 
   if (!id) {
-    container.innerHTML = '<p class="error-msg">No recipe specified.</p>';
+    container.innerHTML = '<div class="error-message">No recipe ID provided.</div>';
     return;
   }
 
+  container.innerHTML = '<div class="loading-spinner" aria-label="Loading recipe"></div>';
+
+  let recipe;
   try {
-    const recipe = await fetchRecipe(id);
-    renderRecipe(recipe);
+    const res = await fetch(`${API_BASE}/recipes/${id}`);
+    if (!res.ok) throw new Error(`Server error ${res.status}`);
+    recipe = await res.json();
   } catch (err) {
-    console.error('Failed to load recipe:', err);
-    container.innerHTML = '<p class="error-msg">Could not load the recipe. Please try again.</p>';
+    container.innerHTML = '<div class="error-message">Could not load recipe. Please try again later.</div>';
+    return;
   }
+
+  document.title = `${recipe.name} – Cookie Baking Hub`;
+
+  container.innerHTML = '';
+
+  // Image
+  if (recipe.image) {
+    container.appendChild(lazyImg(recipe.image, recipe.name, 'recipe-hero-img'));
+  }
+
+  // Title + badge
+  const heading = document.createElement('h1');
+  heading.style.cssText = 'font-family:var(--font-heading);font-size:clamp(1.75rem,4vw,2.5rem);margin-bottom:0.5rem;';
+  heading.textContent = recipe.name;
+  container.appendChild(heading);
+
+  if (recipe.difficulty) {
+    const badge = document.createElement('span');
+    badge.className = `badge ${difficultyClass(recipe.difficulty)}`;
+    badge.textContent = recipe.difficulty;
+    container.appendChild(badge);
+  }
+
+  // Meta
+  const meta = document.createElement('div');
+  meta.className = 'recipe-meta';
+  const metaItems = [
+    { label: 'Prep Time', value: recipe.prepTime ? `${recipe.prepTime} min` : '—' },
+    { label: 'Bake Time', value: recipe.bakingTime ? `${recipe.bakingTime} min` : '—' },
+    { label: 'Servings', value: recipe.servings || '—' },
+    { label: 'Difficulty', value: recipe.difficulty || '—' }
+  ];
+
+  metaItems.forEach(({ label, value }) => {
+    meta.innerHTML += `<div class="recipe-meta-item"><span class="label">${label}</span><span class="value">${value}</span></div>`;
+  });
+  container.appendChild(meta);
+
+  // Description
+  if (recipe.description) {
+    const desc = document.createElement('p');
+    desc.style.cssText = 'margin-bottom:2rem;font-size:1.05rem;color:var(--text-muted);line-height:1.8;';
+    desc.textContent = recipe.description;
+    container.appendChild(desc);
+  }
+
+  // Ingredients
+  if (recipe.ingredients && recipe.ingredients.length) {
+    const section = document.createElement('section');
+    section.className = 'recipe-section';
+    section.innerHTML = '<h2>Ingredients</h2>';
+    const ul = document.createElement('ul');
+    ul.className = 'ingredient-list';
+    recipe.ingredients.forEach(ing => {
+      const li = document.createElement('li');
+      li.textContent = ing;
+      ul.appendChild(li);
+    });
+    section.appendChild(ul);
+    container.appendChild(section);
+  }
+
+  // Instructions / Steps
+  if (recipe.instructions && recipe.instructions.length) {
+    const section = document.createElement('section');
+    section.className = 'recipe-section';
+    section.innerHTML = '<h2>Instructions</h2>';
+    const ol = document.createElement('ol');
+    ol.className = 'steps-list';
+    recipe.instructions.forEach(step => {
+      const li = document.createElement('li');
+      li.textContent = step;
+      ol.appendChild(li);
+    });
+    section.appendChild(ol);
+    container.appendChild(section);
+  }
+
+  // Print button
+  const printBtn = document.createElement('button');
+  printBtn.className = 'btn btn-outline print-btn';
+  printBtn.innerHTML = '🖨️ Print Recipe';
+  printBtn.addEventListener('click', () => window.print());
+  container.appendChild(printBtn);
 }
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', loadRecipe);
